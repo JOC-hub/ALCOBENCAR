@@ -1,4 +1,4 @@
-package proyecto.main;
+package main;
 
 import java.awt.EventQueue;
 

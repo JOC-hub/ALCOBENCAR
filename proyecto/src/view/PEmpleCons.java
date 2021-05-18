@@ -25,7 +25,7 @@ public class PEmpleCons extends JPanel {
 	private void init() {
 		setLayout(null);		
 		
-		setSize(VPMenu.ANCHO-30, VPMenu.ALTO-70);
+		setSize(VEmpleado.ANCHO-30, VEmpleado.ALTO-70);
 				
 		JLabel lblRealizarConsulta = new JLabel("REALIZAR CONSULTA:");
 		lblRealizarConsulta.setBounds(10, 54, 221, 38);

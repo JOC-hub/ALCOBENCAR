@@ -4,22 +4,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import control.AlcoListener;
+import model.Empleados;
 
 public class VVerificacion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	static final int ANCHO = 400;
 	static final int ALTO = 300;
-	public final String BTN_LOGIN = "Login";
-	public static final String BTN_BYPASS = "BYPASS";
+	public final static String BTN_LOGIN = "Login";
+	public final static String BTN_BYPASS = "BYPASS";
 
 	private JTextField txtUser;
 	private JPasswordField txtPwd;
@@ -57,6 +58,8 @@ public class VVerificacion extends JFrame {
 		btnLogin.setBounds(164, 178, 89, 23);
 		getContentPane().add(btnLogin);
 		
+		//Este boton luego lo quitamos que de momento lo usamos para navegar sin tener que introducir datos cada vez que
+		//estemos navegando la app
 		btnBypass = new JButton(BTN_BYPASS);
 		btnBypass.setBounds(164, 212, 89, 23);
 		getContentPane().add(btnBypass);
@@ -76,8 +79,41 @@ public class VVerificacion extends JFrame {
 
 	public void setListener(AlcoListener listener) {
 		btnLogin.addActionListener(listener);
-		btnBypass.addActionListener(listener);
 		//un boton provisional para saltarme el login que no esta completamente implementado
+		btnBypass.addActionListener(listener);
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	public Empleados getDatos() {
+		Empleados empleado = null;
+		String user = txtUser.getText().trim();
+		
+		if (user.isEmpty()) {
+			mostrarMsjError("Debe de introducir el nombre de usuario");
+		} else {
+			//por alguna razon pone que el metodo getText de pwd esta obsoleto
+			//he puesto un SuppressWarnings
+			String pwd = txtPwd.getText().trim();
+			
+			if (pwd.isEmpty()) {
+				mostrarMsjError("Debe introducir la contraseña");
+			} else {
+				empleado = new Empleados(user, pwd);
+			}
+		}
+		
+		return empleado;
+		
 	}
 
+	public void mostrarMsjError(String msj) {
+		JOptionPane.showMessageDialog(this, msj, "Error", JOptionPane.ERROR_MESSAGE);		
+	}
+
+	public void limpiarDatos() {
+		txtPwd.setText(null);
+		txtUser.setText(null);
+	}
+	
 }

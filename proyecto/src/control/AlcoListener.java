@@ -2,11 +2,14 @@ package control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 
+import db.CochePersistencia;
 import db.EmpleadosPersistencia;
+import model.Coche;
 import model.Empleados;
 import view.PCliente;
 import view.PEmpleBorrar;
@@ -20,7 +23,7 @@ public class AlcoListener implements ActionListener {
 
 	static final int INTENTOS = 3;
 	private int contInt = 0;
-	
+
 	private VPMenu vMenu;
 	private PCliente pc;
 	private VVerificacion vv;
@@ -28,9 +31,11 @@ public class AlcoListener implements ActionListener {
 	private PEmpleBorrar peb;
 	private PEmpleCons pec;
 	private PEmpleModi pem;
-	private EmpleadosPersistencia modelo;
+	private EmpleadosPersistencia modeloEmple;
+	private CochePersistencia modelCoche;
 
-	public AlcoListener(VPMenu vMenu, PCliente pc, VVerificacion pv, VEmpleado ve, PEmpleBorrar peb,PEmpleCons pec, PEmpleModi pem) {
+	public AlcoListener(VPMenu vMenu, PCliente pc, VVerificacion pv, VEmpleado ve, PEmpleBorrar peb, PEmpleCons pec,
+			PEmpleModi pem) {
 		this.vMenu = vMenu;
 		this.pc = pc;
 		this.vv = pv;
@@ -38,15 +43,17 @@ public class AlcoListener implements ActionListener {
 		this.peb = peb;
 		this.pec = pec;
 		this.pem = pem;
-		modelo = new EmpleadosPersistencia();
-				
+		modeloEmple = new EmpleadosPersistencia();
+		modelCoche = new CochePersistencia();
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent ev) {
-//dejo hecha la estructura para navegar entre los elementos de la interfaz grafica sin dar ninguna funcionalidad --David
 		if (ev.getSource() instanceof JMenuItem) {
 			if (ev.getActionCommand().equals(vMenu.MNTM_ACC_CLIENTE)) {
+				pc.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
+				pc.cargarCmbModelos(modelCoche.selectDisctinctModelo());
 				pc.hacerVisible();
 				vMenu.cargarPanel(pc);
 			} else if (ev.getActionCommand().equals(vMenu.MNTM_ACC_EMPLE)) {
@@ -65,15 +72,15 @@ public class AlcoListener implements ActionListener {
 			}
 		} else if (ev.getSource() instanceof JButton) {
 			if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
-				vv.dispose();	
+				vv.dispose();
 				ve.hacerVisible();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
 				Empleados empleado = vv.getDatos();
-				
+
 				if (empleado != null) {
-					String pwdDB = modelo.getPasswordUser(empleado.getUser());
-					
-					if (pwdDB == null){
+					String pwdDB = modeloEmple.getPasswordUser(empleado.getUser());
+
+					if (pwdDB == null) {
 						vv.mostrarMsjError("El usuario indicado no existe");
 					} else {
 						if (pwdDB.equals(empleado.getPwd())) {
@@ -81,18 +88,43 @@ public class AlcoListener implements ActionListener {
 							vv.dispose();
 							ve.hacerVisible();
 							vv.limpiarDatos();
-							
+
 						} else {
 							// CONTRASEÑA NO COINCIDE
 							contInt++;
-							vv.mostrarMsjError("La contraseña no es válida. Te quedan " 
-									+ (INTENTOS - contInt) + " intentos.");
+							vv.mostrarMsjError(
+									"La contraseña no es válida. Te quedan " + (INTENTOS - contInt) + " intentos.");
 							if (contInt == INTENTOS) {
 								System.exit(0);
 							}
 						}
 					}
 				}
+			} else if (ev.getActionCommand().equals(PCliente.BTN_COMPROBAR)) {
+				String marcaFiltro = pc.getMarcaFiltro();
+				String modeloFiltro = pc.getModeloFiltro();
+
+				ArrayList<Coche> listaCoches = null;
+
+				if (marcaFiltro.equals(PCliente.OPT_CUALQUIER) && modeloFiltro.equals(PCliente.OPT_CUALQUIER)) {
+					listaCoches = modelCoche.selectCocheCliente();
+					pc.cargarTabla(listaCoches);
+					if (listaCoches.isEmpty()) {
+						pc.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
+					}
+				} else if ((marcaFiltro.equals(PCliente.OPT_CUALQUIER) && !modeloFiltro.equals(PCliente.OPT_CUALQUIER))) {
+					pc.mostrarMsjError("Debe seleccionar marca");
+				} else if ((!marcaFiltro.equals(PCliente.OPT_CUALQUIER) && modeloFiltro.equals(PCliente.OPT_CUALQUIER))) {
+					listaCoches = modelCoche.selectCocheMarca(marcaFiltro);
+					pc.cargarTabla(listaCoches);					
+				} else {
+					listaCoches = modelCoche.selectCocheMarcaModelo(marcaFiltro, modeloFiltro);					
+					pc.cargarTabla(listaCoches);
+					if (listaCoches.isEmpty()) {
+						pc.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+					}
+				}
+				
 			}
 
 		}

@@ -1,15 +1,14 @@
-package db;
+package com.dam.ProyectoMaven.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.sqlite.SQLiteConfig;
-
+// Clase que facilita el método para conectar con la BBDD
 public class AccesoDB {
-
+	
 	private static final String DRIVER = "org.sqlite.JDBC";
-	private static final String URL = "jdbc:sqlite:dbSQLite/DB_ALCOBENCAR.db";
+	private static final String URL = "jdbc:sqlite:dbSQLite/PILOTOS_F1.db";
 	
 	private String driver;
 	private String url;
@@ -22,13 +21,14 @@ public class AccesoDB {
 	public Connection getConexion() throws ClassNotFoundException, SQLException {
 		Class.forName(driver);
 		
-		SQLiteConfig config = new SQLiteConfig();
-		config.enforceForeignKeys(true);
-		
-		Connection con = DriverManager.getConnection(url,  config.toProperties());
-		System.out.println("Conexi�n establecida con la BBDD");
+		Connection con = DriverManager.getConnection(url);
+		System.out.println("Conexión establecida con la BBDD");
 		
 		return con;
 
 	}
+	
+	
+	
+
 }

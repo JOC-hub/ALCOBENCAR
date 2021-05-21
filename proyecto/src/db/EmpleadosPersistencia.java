@@ -15,7 +15,7 @@ public class EmpleadosPersistencia {
 	public String getPasswordUser(String user) {
 		String pwd = null;
 		
-		String query = "SELECT PASSWORD FROM USUARIOS WHERE USUARIO = ?";
+		String query = "SELECT PASSWORD FROM EMPLEADOS WHERE USUARIO = ?";
 		
 		Connection con = null;
 		PreparedStatement pstmt = null;

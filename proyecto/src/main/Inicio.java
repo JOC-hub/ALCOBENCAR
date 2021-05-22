@@ -3,7 +3,7 @@ package main;
 import java.awt.EventQueue;
 
 import control.AlcoListener;
-import view.PCliente;
+import view.VCliente;
 import view.VEmpleado;
 import view.VVerificacion;
 import view.VPMenu;
@@ -20,7 +20,7 @@ public class Inicio {
 			@Override
 			public void run() {
 				VPMenu vMenu = new VPMenu();
-				PCliente pc = new PCliente();
+				VCliente pc = new VCliente();
 				VVerificacion vv = new VVerificacion();
 				VEmpleado ve = new VEmpleado();
 				PEmpleBorrar peb = new PEmpleBorrar();

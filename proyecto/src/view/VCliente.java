@@ -10,12 +10,10 @@ import control.AlcoListener;
 import model.Coche;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
 import javax.swing.JButton;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JComboBox;
@@ -34,7 +32,7 @@ public class VCliente extends JFrame {
 	public static final String CLM_TRACCION = "TRACCION";
 	public static final String CLM_ANIADIDOS = "AÑADIDOS";
 	public static final String CLM_FECHA_SAL = "FECHA SALIDA";
-	public static final String OPT_CUALQUIER = "CUALQUIERA";
+	public static final String OPT_CUALQUIER = "Cualquiera";
 	public static final String BTN_COMPROBAR = "COMPROBAR EXISTENCIAS";
 	public static final String BTN_VOLVER = "VOLVER";
 	public static final String BTN_RESERVAR = "RESERVAR";
@@ -42,9 +40,9 @@ public class VCliente extends JFrame {
 	private JButton btnComprobar;
 	private JComboBox<String> cmbxMarca;
 	private JComboBox<String> cmbxModelo;
-	private JTable tblCoches;
 	private DefaultComboBoxModel<String> cmbModelMarca;
 	private DefaultComboBoxModel<String> cmbModelModelo;
+	private JTable tblCoches;	
 	private DefaultTableModel tblModel;
 	private JTextField txtDNI;
 	private JTextField txtFecha;
@@ -198,21 +196,86 @@ public class VCliente extends JFrame {
 		cmbModelMarca.removeAllElements();
 
 		cmbModelMarca.addElement(OPT_CUALQUIER);
+		
 		for (String marca : listaMarcas) {
 			cmbModelMarca.addElement(marca);
-		}
 
+		}
+	
 	}
 
 	public void cargarCmbModelos(ArrayList<String> listaModelos) {
 		cmbModelModelo.removeAllElements();
 
 		cmbModelModelo.addElement(OPT_CUALQUIER);
+		
 		for (String modelo : listaModelos) {
 			cmbModelModelo.addElement(modelo);
 		}
 
 	}
+	
+	
+	public String getMarcaSeleccionada() {
+		String marcaSelec = "";
+		
+		if (tblCoches.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar un coche para reservalo");
+		} else {
+			marcaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 0);
+		}
+	
+		return marcaSelec;
+	}
+	
+	public String getModeloSeleccionado() {
+		String modeloSelec = "";
+		
+		if (tblCoches.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar un coche para reservalo");
+		} else {
+			modeloSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 1);
+		}
+	
+		return modeloSelec;
+	}
+	
+	public String getTraccionSeleccionada() {
+		String traccionSelec = "";
+		
+		if (tblCoches.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar un coche para reservalo");
+		} else {
+			traccionSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 2);
+		}
+	
+		return traccionSelec;
+	}
+	
+	public String getAniadidosSeleccionados() {
+		String aniadidosSelec = "";
+		
+		if (tblCoches.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar un coche para reservalo");
+		} else {
+			aniadidosSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 3);
+		}
+	
+		return aniadidosSelec;
+	}
+	
+	public String getFechaSeleccionados() {
+		String fechaSelec = "";
+		
+		if (tblCoches.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar un coche para reservalo");
+		} else {
+			fechaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 4);
+		}
+	
+		return fechaSelec;
+	}
+	
 
 	public void setListener(AlcoListener listener) {
 		btnComprobar.addActionListener(listener);
@@ -228,8 +291,6 @@ public class VCliente extends JFrame {
 		setVisible(false);
 
 	}
-
-	// TODO: getSelectedCoche();
 
 	public void mostrarMsjError(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);

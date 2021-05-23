@@ -11,20 +11,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import control.AlcoListener;
+import java.awt.Insets;
 
 public class VEmpleado extends JFrame {
 	private static final long serialVersionUID = 1L;
 	static final int ANCHO = 800;
 	static final int ALTO = 600;
 	
-	public final String MNTM_CONSULTAR = "CONSULTAR";
+	public final String MNTM_CONSULTAR = "CONSULTAR / BORRAR";
 	public final String MNTM_BORRAR = "BORRAR";
 	public final String MNTM_MODIFICAR = "MODIFICAR";
 	public final String MNTM_VOLVER = "VOLVER";
 	
 	private JScrollPane scrpContenedor;
 	private JMenuItem mntmConsultar;
-	private JMenuItem mntmBorrar;
 	private JMenuItem mntmModificar;
 	private JMenuItem mntmVolver;
 	
@@ -55,9 +55,6 @@ public class VEmpleado extends JFrame {
 		mntmConsultar = new JMenuItem(MNTM_CONSULTAR);
 		menuBar.add(mntmConsultar);
 		
-		mntmBorrar = new JMenuItem(MNTM_BORRAR);
-		menuBar.add(mntmBorrar);
-		
 		mntmModificar = new JMenuItem(MNTM_MODIFICAR);
 		menuBar.add(mntmModificar);
 		
@@ -75,7 +72,6 @@ public class VEmpleado extends JFrame {
 	
 	public void setListener(AlcoListener listener) {
 		mntmConsultar.addActionListener(listener);
-		mntmBorrar.addActionListener(listener);
 		mntmModificar.addActionListener(listener);
 		mntmVolver.addActionListener(listener);
 	}

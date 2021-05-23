@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import db.CochePersistencia;
 import db.EmpleadosPersistencia;
@@ -55,10 +56,10 @@ public class AlcoListener implements ActionListener {
 				vMenu.hacerVisible();
 				ve.dispose();
 				vc.hacerInvisible();
-			} else if (ev.getActionCommand().equals(ve.MNTM_BORRAR)) {
-				ve.cargarPanel(peb);
 			} else if (ev.getActionCommand().equals(ve.MNTM_CONSULTAR)) {
 				ve.cargarPanel(pec);
+				pec.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
+				pec.cargarCmbModelos(modelCoche.selectDisctinctModelo());
 			} else if (ev.getActionCommand().equals(ve.MNTM_MODIFICAR)) {
 				ve.cargarPanel(pem);
 			}
@@ -72,11 +73,36 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(VCliente.BTN_VOLVER)) {				
 				vMenu.hacerVisible();
 				vc.hacerInvisible();
-			}else if (ev.getActionCommand().equals(VPMenu.BTN_ACC_EMPLE)) {
+			} else if (ev.getActionCommand().equals(VCliente.BTN_COMPROBAR)) {
+				String marcaFiltro = vc.getMarcaFiltro();
+				String modeloFiltro = vc.getModeloFiltro();
+
+				ArrayList<Coche> listaCoches = null;
+
+				if (marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER)) {
+					listaCoches = modelCoche.selectCocheCliente();
+					vc.cargarTabla(listaCoches);
+					if (listaCoches.isEmpty()) {
+						vc.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
+					}
+				} else if ((marcaFiltro.equals(VCliente.OPT_CUALQUIER) && !modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
+					vc.mostrarMsjError("Debe seleccionar marca");
+				} else if ((!marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
+					listaCoches = modelCoche.selectCocheMarca(marcaFiltro);
+					vc.cargarTabla(listaCoches);					
+				} else {
+					listaCoches = modelCoche.selectCocheMarcaModelo(marcaFiltro, modeloFiltro);					
+					vc.cargarTabla(listaCoches);
+					if (listaCoches.isEmpty()) {
+						vc.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+					}
+				}
+				
+			} else if (ev.getActionCommand().equals(VPMenu.BTN_ACC_EMPLE)) {
 				contInt = 0;
 				vv.hacerVisible();
 				vMenu.hacerInvisible();
-			}else if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
+			} else if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
 				ve.hacerVisible();
 				vv.dispose();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
@@ -105,34 +131,62 @@ public class AlcoListener implements ActionListener {
 						}
 					}
 				}
-			} else if (ev.getActionCommand().equals(VCliente.BTN_COMPROBAR)) {
-				String marcaFiltro = vc.getMarcaFiltro();
-				String modeloFiltro = vc.getModeloFiltro();
-
-				ArrayList<Coche> listaCoches = null;
-
-				if (marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER)) {
-					listaCoches = modelCoche.selectCocheCliente();
-					vc.cargarTabla(listaCoches);
-					if (listaCoches.isEmpty()) {
-						vc.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
-					}
-				} else if ((marcaFiltro.equals(VCliente.OPT_CUALQUIER) && !modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
-					vc.mostrarMsjError("Debe seleccionar marca");
-				} else if ((!marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
-					listaCoches = modelCoche.selectCocheMarca(marcaFiltro);
-					vc.cargarTabla(listaCoches);					
-				} else {
-					listaCoches = modelCoche.selectCocheMarcaModelo(marcaFiltro, modeloFiltro);					
-					vc.cargarTabla(listaCoches);
-					if (listaCoches.isEmpty()) {
-						vc.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+			} else if (ev.getActionCommand().equals(PEmpleCons.BTN_CONSULTAR)) {
+				consultarCocheEmple();
+			} else if (ev.getActionCommand().equals(PEmpleCons.BTN_ELIMINAR)) {
+				int idCoche = pec.getCocheSeleccionado();
+				
+				if (idCoche != -1) {
+					
+					int opcion = JOptionPane.showConfirmDialog(pec, 
+							"Se va a eliminar el piloto seleccionado ¿Desea continuar?",
+							"Confirmación de borrado",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					
+					if (opcion == JOptionPane.YES_OPTION) {
+						int res = modelCoche.deleteCoche(idCoche);
+						
+						if (res == 1) {
+							pec.mostrarMsjInfo("El borrado se ha realizado con éxito");
+							pec.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
+							pec.cargarCmbModelos(modelCoche.selectDisctinctModelo());
+							consultarCocheEmple();
+							
+						} else {
+							pec.mostrarMsjError("No se podido eliminar el piloto");
+						}
 					}
 				}
 				
 			}
-
 		}
 
 	}
+	
+	private void consultarCocheEmple() {
+		String marcaFiltro = pec.getMarcaFiltro();
+		String modeloFiltro = pec.getModeloFiltro();
+
+		ArrayList<Coche> listaCoches = null;
+
+		if (marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER)) {
+			listaCoches = modelCoche.selectCocheEmple();
+			pec.cargarTabla(listaCoches);
+			if (listaCoches.isEmpty()) {
+				pec.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
+			}
+		} else if ((marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && !modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER))) {
+			pec.mostrarMsjError("Debe seleccionar marca");
+		} else if ((!marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER))) {
+			listaCoches = modelCoche.selectCocheMarcaEmple(marcaFiltro);
+			pec.cargarTabla(listaCoches);					
+		} else {
+			listaCoches = modelCoche.selectCocheMarcaModeloEmple(marcaFiltro, modeloFiltro);					
+			pec.cargarTabla(listaCoches);
+			if (listaCoches.isEmpty()) {
+				pec.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+			}
+		}		
+}
 }

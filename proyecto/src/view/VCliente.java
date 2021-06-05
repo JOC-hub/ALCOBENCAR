@@ -20,6 +20,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class VCliente extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -36,7 +38,9 @@ public class VCliente extends JFrame {
 	public static final String BTN_COMPROBAR = "COMPROBAR EXISTENCIAS";
 	public static final String BTN_VOLVER = "VOLVER";
 	public static final String BTN_RESERVAR = "RESERVAR";
-
+	public static final String BTN_GUARDAR = "GUARDAR DATOS";
+	public static final String BTN_CANCELAR = "CANCELAR";
+	
 	private JButton btnComprobar;
 	private JComboBox<String> cmbxMarca;
 	private JComboBox<String> cmbxModelo;
@@ -45,10 +49,13 @@ public class VCliente extends JFrame {
 	private JTable tblCoches;	
 	private DefaultTableModel tblModel;
 	private JTextField txtDNI;
-	private JTextField txtFecha;
 	private JButton btnReservar;
 	private JTextField txtApeNom;
 	private JButton btnClienteVolver;
+	private JButton btnGuardar;
+	private JButton btnCancelar;
+	private JLabel lblApeNom;
+	private JLabel lblDNI;
 
 	public VCliente() {
 		init();
@@ -75,20 +82,16 @@ public class VCliente extends JFrame {
 		lblModelo.setBounds(15, 171, 46, 14);
 		getContentPane().add(lblModelo);
 
-		JLabel lblApeNom = new JLabel("Nombre y apellido:");
-		lblApeNom.setBounds(391, 111, 96, 14);
+		lblApeNom = new JLabel("Nombre y apellido:");
+		lblApeNom.setBounds(362, 126, 125, 14);
 		getContentPane().add(lblApeNom);
 
-		JLabel lblDNI = new JLabel("DNI:");
-		lblDNI.setBounds(391, 142, 96, 14);
+		lblDNI = new JLabel("DNI:");
+		lblDNI.setBounds(362, 157, 96, 14);
 		getContentPane().add(lblDNI);
 
-		JLabel lblFecha = new JLabel("Fecha:");
-		lblFecha.setBounds(391, 171, 46, 14);
-		getContentPane().add(lblFecha);
-
 		btnComprobar = new JButton(BTN_COMPROBAR);
-		btnComprobar.setBounds(104, 200, 184, 38);
+		btnComprobar.setBounds(104, 217, 184, 38);
 		getContentPane().add(btnComprobar);
 
 		cmbxMarca = new JComboBox<String>();
@@ -104,39 +107,43 @@ public class VCliente extends JFrame {
 		getContentPane().add(cmbxModelo);
 
 		JScrollPane scrpTabla = new JScrollPane();
-		scrpTabla.setBounds(10, 265, 750, 254);
+		scrpTabla.setBounds(10, 266, 764, 284);
 		getContentPane().add(scrpTabla);
 
 		tblCoches = new JTable();
 		tblCoches.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrpTabla.setViewportView(tblCoches);
-
+		
 		txtApeNom = new JTextField();
-		txtApeNom.setBounds(503, 108, 207, 20);
+		txtApeNom.setBounds(503, 123, 207, 20);
 		getContentPane().add(txtApeNom);
 		txtApeNom.setColumns(10);
 
 		txtDNI = new JTextField();
-		txtDNI.setBounds(503, 139, 207, 20);
+		txtDNI.setBounds(503, 154, 207, 20);
 		getContentPane().add(txtDNI);
 		txtDNI.setColumns(10);
 
-		txtFecha = new JTextField();
-		txtFecha.setBounds(503, 168, 207, 20);
-		getContentPane().add(txtFecha);
-		txtFecha.setColumns(10);
-
 		btnReservar = new JButton(BTN_RESERVAR);
-		btnReservar.setBounds(464, 200, 184, 38);
+		btnReservar.setBounds(499, 217, 184, 38);
 		getContentPane().add(btnReservar);
 
 		btnClienteVolver = new JButton(BTN_VOLVER);
 		btnClienteVolver.setBounds(685, 11, 89, 23);
 		getContentPane().add(btnClienteVolver);
+		
+		btnGuardar = new JButton(BTN_GUARDAR);
+		btnGuardar.setBounds(466, 69, 151, 23);
+		getContentPane().add(btnGuardar);
+		
+		btnCancelar = new JButton(BTN_CANCELAR);
+		btnCancelar.setBounds(648, 69, 112, 23);
+		getContentPane().add(btnCancelar);
 
 		configurarTabla();
 	}
 
+	
 	private void configurarTabla() {
 		tblModel = new DefaultTableModel() {
 
@@ -215,74 +222,71 @@ public class VCliente extends JFrame {
 
 	}
 	
+	public boolean isCocheSelected() {
+		boolean isSelected = false;
+		
+		if (tblCoches.getSelectedRow() != -1) {
+			isSelected = true;
+		}
+		
+		return isSelected;
+	}
 	
 	public String getMarcaSeleccionada() {
-		String marcaSelec = "";
-		
-		if (tblCoches.getSelectedRow() == -1) {
-			mostrarMsjError("Debe seleccionar un coche para reservalo");
-		} else {
-			marcaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 0);
-		}
-	
-		return marcaSelec;
+		String marcaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 0);
+		System.out.println(marcaSelec);
+		return marcaSelec.trim();	
 	}
 	
 	public String getModeloSeleccionado() {
-		String modeloSelec = "";
-		
-		if (tblCoches.getSelectedRow() == -1) {
-			mostrarMsjError("Debe seleccionar un coche para reservalo");
-		} else {
-			modeloSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 1);
-		}
-	
-		return modeloSelec;
+		String modeloSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 1);	
+		System.out.println(modeloSelec);
+		return modeloSelec.trim();
 	}
 	
 	public String getTraccionSeleccionada() {
-		String traccionSelec = "";
-		
-		if (tblCoches.getSelectedRow() == -1) {
-			mostrarMsjError("Debe seleccionar un coche para reservalo");
-		} else {
-			traccionSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 2);
-		}
-	
-		return traccionSelec;
+		String traccionSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 2);
+		System.out.println(traccionSelec);
+		return traccionSelec.trim();
 	}
 	
 	public String getAniadidosSeleccionados() {
-		String aniadidosSelec = "";
-		
-		if (tblCoches.getSelectedRow() == -1) {
-			mostrarMsjError("Debe seleccionar un coche para reservalo");
-		} else {
-			aniadidosSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 3);
-		}
-	
-		return aniadidosSelec;
+		String aniadidosSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 3);
+		System.out.println(aniadidosSelec);
+		return aniadidosSelec.trim();
 	}
 	
-	public String getFechaSeleccionados() {
-		String fechaSelec = "";
-		
-		if (tblCoches.getSelectedRow() == -1) {
-			mostrarMsjError("Debe seleccionar un coche para reservalo");
-		} else {
-			fechaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 4);
-		}
-	
-		return fechaSelec;
+	public String getFechaSeleccionada() {
+		String fechaSelec = (String) tblModel.getValueAt(tblCoches.getSelectedRow(), 4);
+		System.out.println(fechaSelec);
+		return fechaSelec.trim();
 	}
-	
 
+	public String getApeNom() {
+		String apeNom = txtApeNom.getText().trim();
+		return apeNom;
+	}
+	
+	public String getDNI() {
+		String dni = txtDNI.getText().trim();
+		return dni;
+	}
 	public void setListener(AlcoListener listener) {
 		btnComprobar.addActionListener(listener);
 		btnReservar.addActionListener(listener);
 		btnClienteVolver.addActionListener(listener);
+		btnCancelar.addActionListener(listener);
+		btnGuardar.addActionListener(listener);
 	}
 
+	public void disableTabla() {
+		tblCoches.setEnabled(false);
+	}
+	
+	public void enableTabla() {
+		tblCoches.setEnabled(true);
+	}
+	
 	public void hacerVisible() {
 		setVisible(true);
 	}
@@ -292,6 +296,26 @@ public class VCliente extends JFrame {
 
 	}
 
+	public void hacerReservaInvisible() {
+		lblApeNom.setVisible(false);
+		lblDNI.setVisible(false);
+		txtApeNom.setVisible(false);
+		txtDNI.setVisible(false);
+		btnGuardar.setVisible(false);
+		btnCancelar.setVisible(false);
+		
+	}
+	
+	public void hacerReservaVisible() {
+		lblApeNom.setVisible(true);
+		lblDNI.setVisible(true);
+		txtApeNom.setVisible(true);
+		txtDNI.setVisible(true);
+		btnGuardar.setVisible(true);
+		btnCancelar.setVisible(true);
+		
+	}
+	
 	public void mostrarMsjError(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
 
@@ -307,5 +331,11 @@ public class VCliente extends JFrame {
 		for (int i = a; i >= 0; i--) {
 			tblModel.removeRow(i);
 		}
+	}
+
+	public void limpiarComponentes() {
+		txtApeNom.setText("");
+		txtDNI.setText("");
+		
 	}
 }

@@ -472,4 +472,88 @@ public class CochePersistencia {
 		return res;
 	}
 	
+	public int selectIDCoche(String marca, String modelo, String traccion, String aniadidos, String fechaSal) {
+		int IDCoche = 0;
+		String query = "SELECT ID_COCHE MODELO FROM COCHE "
+				+ "WHERE MARCA = ? "
+				+ "AND MODELO = ? "
+				+ "AND TRACCION = ? "
+				+ "AND ANIADIDOS = ? "
+				+ "AND FECHA_SALIDA = ?";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rslt = null;
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setString(1, marca);
+			pstmt.setString(2, modelo);
+			pstmt.setString(3, traccion);
+			pstmt.setString(4, aniadidos);
+			pstmt.setString(5, fechaSal);
+			
+			rslt = pstmt.executeQuery();
+			
+			
+			while (rslt.next()) {
+				IDCoche = rslt.getInt(1);
+			}			
+			
+		} catch (ClassNotFoundException e) {
+			System.out.println("Problemas con el driver");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rslt != null) rslt.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//Para asegurarme de que el metodo funciona bien
+		System.out.println(IDCoche);
+		return IDCoche;
+	}
+	
+	public int reservarCoche(int idCoche) {
+		int res = 0;
+		
+		String query = "UPDATE COCHE SET RESERVADO = 'SI' "
+				+ "WHERE ID_COCHE = ?";
+				
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setInt(1, idCoche);
+			
+			res = pstmt.executeUpdate();
+						
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			res = -1;
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res;
+	}
+	
 }

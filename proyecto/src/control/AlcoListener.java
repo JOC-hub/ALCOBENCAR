@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import db.CochePersistencia;
 import db.EmpleadosPersistencia;
+import db.ReservaPersistencia;
 import model.Coche;
 import model.Empleados;
 import view.VCliente;
@@ -34,6 +35,7 @@ public class AlcoListener implements ActionListener {
 	private PEmpleModi pem;
 	private EmpleadosPersistencia modeloEmple;
 	private CochePersistencia modelCoche;
+	private ReservaPersistencia modelReserva;
 
 	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleBorrar peb, PEmpleCons pec,
 			PEmpleModi pem) {
@@ -46,7 +48,8 @@ public class AlcoListener implements ActionListener {
 		this.pem = pem;
 		modeloEmple = new EmpleadosPersistencia();
 		modelCoche = new CochePersistencia();
-
+		modelReserva = new ReservaPersistencia();
+		
 	}
 
 	@Override
@@ -58,6 +61,7 @@ public class AlcoListener implements ActionListener {
 				vc.hacerInvisible();
 			} else if (ev.getActionCommand().equals(ve.MNTM_CONSULTAR)) {
 				ve.cargarPanel(pec);
+				pec.limpiartabla();
 				pec.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
 				pec.cargarCmbModelos(modelCoche.selectDisctinctModelo());
 			} else if (ev.getActionCommand().equals(ve.MNTM_MODIFICAR)) {
@@ -66,6 +70,8 @@ public class AlcoListener implements ActionListener {
 		} else if (ev.getSource() instanceof JButton) {
 			if (ev.getActionCommand().equals(VPMenu.BTN_ACC_CLIENTE)) {
 				vc.hacerVisible();
+				vc.hacerReservaInvisible();
+				vc.enableTabla();
 				vc.limpiartabla();
 				vc.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
 				vc.cargarCmbModelos(modelCoche.selectDisctinctModelo());
@@ -73,30 +79,49 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(VCliente.BTN_VOLVER)) {				
 				vMenu.hacerVisible();
 				vc.hacerInvisible();
-			} else if (ev.getActionCommand().equals(VCliente.BTN_COMPROBAR)) {
-				String marcaFiltro = vc.getMarcaFiltro();
-				String modeloFiltro = vc.getModeloFiltro();
-
-				ArrayList<Coche> listaCoches = null;
-
-				if (marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER)) {
-					listaCoches = modelCoche.selectCocheCliente();
-					vc.cargarTabla(listaCoches);
-					if (listaCoches.isEmpty()) {
-						vc.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
-					}
-				} else if ((marcaFiltro.equals(VCliente.OPT_CUALQUIER) && !modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
-					vc.mostrarMsjError("Debe seleccionar marca");
-				} else if ((!marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
-					listaCoches = modelCoche.selectCocheMarca(marcaFiltro);
-					vc.cargarTabla(listaCoches);					
+			} else if (ev.getActionCommand().equals(VCliente.BTN_RESERVAR)) {
+				if (!vc.isCocheSelected()) {
+					vc.mostrarMsjError("DEBE SELECCIONAR UN COCHE PARA RESERVAR");
 				} else {
-					listaCoches = modelCoche.selectCocheMarcaModelo(marcaFiltro, modeloFiltro);					
-					vc.cargarTabla(listaCoches);
-					if (listaCoches.isEmpty()) {
-						vc.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
-					}
+					vc.hacerReservaVisible();
+					vc.disableTabla();
 				}
+				
+			} else if (ev.getActionCommand().equals(VCliente.BTN_CANCELAR)) {
+				vc.enableTabla();
+				vc.hacerReservaInvisible();
+				
+			} else if (ev.getActionCommand().equals(VCliente.BTN_GUARDAR)) {
+				int idCoche = modelCoche.selectIDCoche(vc.getMarcaSeleccionada(), vc.getModeloSeleccionado(), vc.getTraccionSeleccionada(), 
+						vc.getAniadidosSeleccionados(), vc.getFechaSeleccionada());
+				String dni = vc.getDNI();
+				String apeNom = vc.getApeNom();
+				int res1 = modelCoche.reservarCoche(idCoche);
+				int res2 = modelReserva.insertarReserva(idCoche, dni, apeNom);
+				
+				if (dni.length() != 9) {
+					vc.mostrarMsjError("DEBE INTRODUCIR UN DNI VALIDO");				
+				} else {
+					
+					if (res1 == 0 || res2 == 0) {
+						vc.mostrarMsjInfo("El coche se ha reservado correctamente");
+						vc.limpiarComponentes();
+						consultarCocheCliente();
+					} else if (res1 == -1 || res2 == -1) {
+						vc.mostrarMsjError("No se ha podido reservar el coche");
+					} else {
+						vc.mostrarMsjError("No se ha podido reservar el coche");
+					}
+					
+					//modelCoche.reservarCoche(idCoche);
+					//modelReserva.insertarReserva(idCoche, dni, apeNom);
+				}
+				
+				
+			} else if (ev.getActionCommand().equals(VCliente.BTN_COMPROBAR)) {
+				vc.enableTabla();
+				vc.hacerReservaInvisible();
+				consultarCocheCliente();
 				
 			} else if (ev.getActionCommand().equals(VPMenu.BTN_ACC_EMPLE)) {
 				contInt = 0;
@@ -105,6 +130,7 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
 				ve.hacerVisible();
 				vv.dispose();
+				pec.limpiartabla();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
 				Empleados empleado = vv.getDatos();
 
@@ -164,6 +190,33 @@ public class AlcoListener implements ActionListener {
 
 	}
 	
+	private void consultarCocheCliente() {
+		String marcaFiltro = vc.getMarcaFiltro();
+		String modeloFiltro = vc.getModeloFiltro();
+
+		ArrayList<Coche> listaCoches = null;
+
+		if (marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER)) {
+			listaCoches = modelCoche.selectCocheCliente();
+			vc.cargarTabla(listaCoches);
+			if (listaCoches.isEmpty()) {
+				vc.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
+			}
+		} else if ((marcaFiltro.equals(VCliente.OPT_CUALQUIER) && !modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
+			vc.mostrarMsjError("Debe seleccionar marca");
+		} else if ((!marcaFiltro.equals(VCliente.OPT_CUALQUIER) && modeloFiltro.equals(VCliente.OPT_CUALQUIER))) {
+			listaCoches = modelCoche.selectCocheMarca(marcaFiltro);
+			vc.cargarTabla(listaCoches);					
+		} else {
+			listaCoches = modelCoche.selectCocheMarcaModelo(marcaFiltro, modeloFiltro);					
+			vc.cargarTabla(listaCoches);
+			if (listaCoches.isEmpty()) {
+				vc.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+			}
+		}
+		
+	}
+
 	private void consultarCocheEmple() {
 		String marcaFiltro = pec.getMarcaFiltro();
 		String modeloFiltro = pec.getModeloFiltro();

@@ -201,11 +201,24 @@ public class PEmpleCons extends JPanel {
 		setVisible(true);
 	}
 	
+	public void hacerInvisible() {
+		setVisible(false);
+
+	}
+	
 	public void mostrarMsjError(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void mostrarMsjInfo(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void limpiartabla() {
+
+		int a = tblModel.getRowCount() - 1;
+		for (int i = a; i >= 0; i--) {
+			tblModel.removeRow(i);
+		}
 	}
 }

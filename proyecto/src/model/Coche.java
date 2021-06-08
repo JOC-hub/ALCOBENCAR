@@ -2,7 +2,6 @@ package model;
 
 public class Coche {
 
-	private int idCoche;
 	private String marca;
 	private String modelo;
 	private String traccion;
@@ -10,19 +9,14 @@ public class Coche {
 	private String fechaSalida;
 	private String reservado;
 	
-	public Coche(int idCoche, String marca, String modelo, String traccion, String aniadidos, String fechaSalida,
+	public Coche(String marca, String modelo, String traccion, String aniadidos, String fechaSalida,
 			String reservado) {
-		this.idCoche = idCoche;
 		this.marca = marca;
 		this.modelo = modelo;
 		this.traccion = traccion;
 		this.aniadidos = aniadidos;
 		this.fechaSalida = fechaSalida;
 		this.reservado = reservado;
-	}
-
-	public int getIdCoche() {
-		return idCoche;
 	}
 
 	public String getMarca() {

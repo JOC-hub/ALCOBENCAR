@@ -1,7 +1,5 @@
 package model;
 
-import model.ID_Coche;
-
 public class Coche {
 
 	private int id_coche;

@@ -10,6 +10,7 @@ import view.VPMenu;
 import view.PEmpleInsert;
 import view.PEmpleCons;
 import view.PEmpleModi;
+import view.PEmpleReserva;
 
 
 public class Inicio {
@@ -26,13 +27,15 @@ public class Inicio {
 				PEmpleCons pec = new PEmpleCons();
 				PEmpleModi pem = new PEmpleModi();
 				PEmpleInsert pei = new PEmpleInsert();
-				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, pec, pem, pei);
+				PEmpleReserva per = new PEmpleReserva();
+				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, pec, pem, pei, per);
 				vMenu.setListener(listener);
 				pc.setListener(listener);
 				vv.setListener(listener);
 				ve.setListener(listener);
 				pec.setListener(listener);
 				pei.setListener(listener);
+				//per.setListener(listener);
 
 				
 				vMenu.hacerVisible();

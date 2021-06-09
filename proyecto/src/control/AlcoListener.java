@@ -13,10 +13,12 @@ import db.EmpleadosPersistencia;
 import db.ReservaPersistencia;
 import model.Coche;
 import model.Empleados;
+import model.Reserva;
 import view.VCliente;
 import view.PEmpleCons;
 import view.PEmpleInsert;
 import view.PEmpleModi;
+import view.PEmpleReserva;
 import view.VEmpleado;
 import view.VVerificacion;
 import view.VPMenu;
@@ -33,12 +35,13 @@ public class AlcoListener implements ActionListener {
 	private PEmpleCons pec;
 	private PEmpleModi pem;
 	private PEmpleInsert pei;
+	private PEmpleReserva per;
 	private EmpleadosPersistencia modeloEmple;
 	private CochePersistencia modelCoche;
 	private ReservaPersistencia modelReserva;
 
 	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleCons pec, PEmpleModi pem,
-			PEmpleInsert pei) {
+			PEmpleInsert pei, PEmpleReserva per) {
 		this.vMenu = vMenu;
 		this.vc = vc;
 		this.vv = pv;
@@ -46,6 +49,7 @@ public class AlcoListener implements ActionListener {
 		this.pec = pec;
 		this.pem = pem;
 		this.pei = pei;
+		this.per = per;
 		modeloEmple = new EmpleadosPersistencia();
 		modelCoche = new CochePersistencia();
 		modelReserva = new ReservaPersistencia();
@@ -71,6 +75,10 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(ve.MNTM_INSERT)) {
 				pei.hacerVisible();
 				ve.cargarPanel(pei);
+			}else if(ev.getActionCommand().equals(ve.MNTM_RESERVAS)) {
+				per.hacerVisible();
+				ve.cargarPanel(per);
+				consultarReservaEmple();
 			}
 		} else if (ev.getSource() instanceof JButton) {
 			if (ev.getActionCommand().equals(VPMenu.BTN_ACC_CLIENTE)) {
@@ -139,6 +147,7 @@ public class AlcoListener implements ActionListener {
 				pec.hacerInvisible();
 				pei.hacerInvisible();
 				pec.hacerInvisible();
+				per.hacerInvisible();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
 				Empleados empleado = vv.getDatos();
 
@@ -158,6 +167,7 @@ public class AlcoListener implements ActionListener {
 							pec.hacerInvisible();
 							pei.hacerInvisible();
 							pem.hacerInvisible();
+							per.hacerInvisible();
 						} else {
 							// CONTRASEÑA NO COINCIDE
 							contInt++;
@@ -237,12 +247,13 @@ public class AlcoListener implements ActionListener {
 						pei.mostrarMsjError("NO SE PUDO REALIZAR LA INSERCIÓN");
 					} else {
 						pei.mostrarMsjInfo("SE HA REALIZADO LA INSERCIÓN");
+						pei.limpiarComponentes();
 					}
 				}
 
 			} else if (ev.getActionCommand().equals(PEmpleInsert.BTN_LIMPIAR)) {
 				pei.limpiarComponentes();
-			}
+			} 
 		}
 
 	}
@@ -297,6 +308,17 @@ public class AlcoListener implements ActionListener {
 			if (listaCoches.isEmpty()) {
 				pec.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
 			}
+		}
+	}
+	
+	private void consultarReservaEmple() {
+		ArrayList<Reserva> listaReservas = null;
+		
+		listaReservas = modelReserva.selectReservaEmple();
+		per.cargarTabla(listaReservas);
+		
+			if (listaReservas.isEmpty()) {
+				per.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
 		}
 	}
 }

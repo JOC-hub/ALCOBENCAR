@@ -100,7 +100,7 @@ public class PEmpleInsert extends JPanel {
 		add(spnMes);
 		
 		spnAnio = new JSpinner();
-		spnAnio.setModel(new SpinnerNumberModel(2000, 1990, 2050, 1));
+		spnAnio.setModel(new SpinnerNumberModel(1950, 1950, 2050, 1));
 		spnAnio.setBounds(523, 149, 78, 20);
 		add(spnAnio);
 		
@@ -110,7 +110,7 @@ public class PEmpleInsert extends JPanel {
 		add(lblReserva);
 		
 		cmbReservado = new JComboBox<String>();
-		cmbReservado.setModel(new DefaultComboBoxModel(new String[] {"NO", "SI"}));
+		cmbReservado.setModel(new DefaultComboBoxModel<String>(new String[] {"NO", "SI"}));
 		cmbReservado.setBounds(499, 205, 72, 22);
 		add(cmbReservado);
 		
@@ -147,7 +147,7 @@ public class PEmpleInsert extends JPanel {
 		txtaAdds.setText("");
 		spnDia.setValue(1);
 		spnMes.setValue(1);
-		spnAnio.setValue(1);
+		spnAnio.setValue(1950);
 		cmbReservado.setSelectedIndex(0);
 	}
 	

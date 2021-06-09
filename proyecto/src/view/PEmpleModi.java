@@ -100,7 +100,12 @@ public class PEmpleModi extends JPanel {
 		btnModificar.addActionListener(listener);
 	}
 	
+	public void hacerInvisible() {
+		setVisible(false);
+	}
+	
 	public void hacerVisible() {
 		setVisible(true);
 	}
+	
 }

@@ -157,6 +157,7 @@ public class CochePersistencia {
 			String aniadidos;
 			String fecha;
 			String reserv;
+			
 			while (rslt.next()) {
 				id = rslt.getInt(1);
 				marca = rslt.getString(2);
@@ -331,6 +332,7 @@ public class CochePersistencia {
 			String aniadidos;
 			String fecha;
 			String reserv;
+			
 			while (rslt.next()) {
 				id = rslt.getInt(1);
 				marca = rslt.getString(2);
@@ -464,6 +466,47 @@ public class CochePersistencia {
 			try {
 				if (pstmt != null) pstmt.close();
 				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res;
+	}
+	
+	public int insertCoche(String marca, String modelo, String traccion, String aniadidos, String fecha_sal, String reservado) {
+		String query = "INSERT INTO COCHE (MARCA, MODELO, TRACCION, ANIADIDOS, FECHA_SALIDA, RESERVADO)"
+				+ "VALUES (?, ?, ?, ?, ?, ?)";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		int res = 0;
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setString(1, marca);
+			pstmt.setString(2, modelo);
+			pstmt.setString(3, traccion);
+			pstmt.setString(4, aniadidos);
+			pstmt.setString(5, fecha_sal);
+			pstmt.setString(6, reservado);
+			
+			res = pstmt.executeUpdate();
+			
+		}catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			res = -1;
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

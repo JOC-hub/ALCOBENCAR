@@ -7,7 +7,7 @@ import view.VCliente;
 import view.VEmpleado;
 import view.VVerificacion;
 import view.VPMenu;
-import view.PEmpleBorrar;
+import view.PEmpleInsert;
 import view.PEmpleCons;
 import view.PEmpleModi;
 
@@ -23,18 +23,17 @@ public class Inicio {
 				VCliente pc = new VCliente();
 				VVerificacion vv = new VVerificacion();
 				VEmpleado ve = new VEmpleado();
-				PEmpleBorrar peb = new PEmpleBorrar();
 				PEmpleCons pec = new PEmpleCons();
 				PEmpleModi pem = new PEmpleModi();
-				
-				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, peb, pec, pem);
+				PEmpleInsert pei = new PEmpleInsert();
+				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, pec, pem, pei);
 				vMenu.setListener(listener);
 				pc.setListener(listener);
 				vv.setListener(listener);
 				ve.setListener(listener);
-				peb.setListener(listener);
 				pec.setListener(listener);
-				peb.setListener(listener);
+				pei.setListener(listener);
+
 				
 				vMenu.hacerVisible();
 				

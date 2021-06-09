@@ -13,6 +13,7 @@ public class ReservaPersistencia {
 	}
 	
 	public int insertarReserva(int idCoche, String apeNom, String dni) {
+		
 		String query = "INSERT INTO INFO_RESERVA (APE_NOM, DNI, FECHA_RESERVA, ID_COCHE)"
 				+ "VALUES (?, ?, date('now'), ?)";
 		
@@ -25,9 +26,9 @@ public class ReservaPersistencia {
 			
 			pstmt = con.prepareStatement(query);
 			
-			pstmt.setInt(1, idCoche);
-			pstmt.setString(2, apeNom);
-			pstmt.setString(3, dni);
+			pstmt.setString(1, apeNom);
+			pstmt.setString(2, dni);
+			pstmt.setInt(3, idCoche);
 			
 			res = pstmt.executeUpdate();
 			

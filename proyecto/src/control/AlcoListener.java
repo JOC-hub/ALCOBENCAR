@@ -14,8 +14,8 @@ import db.ReservaPersistencia;
 import model.Coche;
 import model.Empleados;
 import view.VCliente;
-import view.PEmpleBorrar;
 import view.PEmpleCons;
+import view.PEmpleInsert;
 import view.PEmpleModi;
 import view.VEmpleado;
 import view.VVerificacion;
@@ -30,22 +30,22 @@ public class AlcoListener implements ActionListener {
 	private VCliente vc;
 	private VVerificacion vv;
 	private VEmpleado ve;
-	private PEmpleBorrar peb;
 	private PEmpleCons pec;
 	private PEmpleModi pem;
+	private PEmpleInsert pei;
 	private EmpleadosPersistencia modeloEmple;
 	private CochePersistencia modelCoche;
 	private ReservaPersistencia modelReserva;
 
-	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleBorrar peb, PEmpleCons pec,
-			PEmpleModi pem) {
+	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleCons pec,
+			PEmpleModi pem, PEmpleInsert pei) {
 		this.vMenu = vMenu;
 		this.vc = vc;
 		this.vv = pv;
 		this.ve = ve;
-		this.peb = peb;
 		this.pec = pec;
 		this.pem = pem;
+		this.pei = pei;
 		modeloEmple = new EmpleadosPersistencia();
 		modelCoche = new CochePersistencia();
 		modelReserva = new ReservaPersistencia();
@@ -60,12 +60,17 @@ public class AlcoListener implements ActionListener {
 				ve.dispose();
 				vc.hacerInvisible();
 			} else if (ev.getActionCommand().equals(ve.MNTM_CONSULTAR)) {
+				pec.hacerVisible();
 				ve.cargarPanel(pec);
 				pec.limpiartabla();
 				pec.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
 				pec.cargarCmbModelos(modelCoche.selectDisctinctModelo());
 			} else if (ev.getActionCommand().equals(ve.MNTM_MODIFICAR)) {
+				pem.hacerVisible();
 				ve.cargarPanel(pem);
+			} else if (ev.getActionCommand().equals(ve.MNTM_INSERT)) {
+				pei.hacerVisible();
+				ve.cargarPanel(pei);
 			}
 		} else if (ev.getSource() instanceof JButton) {
 			if (ev.getActionCommand().equals(VPMenu.BTN_ACC_CLIENTE)) {
@@ -76,6 +81,7 @@ public class AlcoListener implements ActionListener {
 				vc.cargarCmbMarcas(modelCoche.selectDisctinctMarca());
 				vc.cargarCmbModelos(modelCoche.selectDisctinctModelo());
 				vMenu.hacerInvisible();
+				vc.limpiarComponentes();
 			} else if (ev.getActionCommand().equals(VCliente.BTN_VOLVER)) {				
 				vMenu.hacerVisible();
 				vc.hacerInvisible();
@@ -90,7 +96,7 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(VCliente.BTN_CANCELAR)) {
 				vc.enableTabla();
 				vc.hacerReservaInvisible();
-				
+				vc.limpiarComponentes();
 			} else if (ev.getActionCommand().equals(VCliente.BTN_GUARDAR)) {
 				int idCoche = modelCoche.selectIDCoche(vc.getMarcaSeleccionada(), vc.getModeloSeleccionado(), vc.getTraccionSeleccionada(), 
 						vc.getAniadidosSeleccionados(), vc.getFechaSeleccionada());
@@ -103,18 +109,17 @@ public class AlcoListener implements ActionListener {
 					vc.mostrarMsjError("DEBE INTRODUCIR UN DNI VALIDO");				
 				} else {
 					
-					if (res1 == 0 || res2 == 0) {
+					if (res1 == -1 || res2 == -1) {
+						vc.mostrarMsjError("No se ha podido reservar el coche");
+					} else {
 						vc.mostrarMsjInfo("El coche se ha reservado correctamente");
 						vc.limpiarComponentes();
 						consultarCocheCliente();
-					} else if (res1 == -1 || res2 == -1) {
-						vc.mostrarMsjError("No se ha podido reservar el coche");
-					} else {
-						vc.mostrarMsjError("No se ha podido reservar el coche");
+						vc.enableTabla();
+						vc.hacerReservaInvisible();
 					}
 					
-					//modelCoche.reservarCoche(idCoche);
-					//modelReserva.insertarReserva(idCoche, dni, apeNom);
+					
 				}
 				
 				
@@ -130,7 +135,12 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
 				ve.hacerVisible();
 				vv.dispose();
+				vv.limpiarDatos();
 				pec.limpiartabla();
+				pei.limpiarComponentes();
+				pec.hacerInvisible();
+				pei.hacerInvisible();
+				pec.hacerInvisible();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
 				Empleados empleado = vv.getDatos();
 
@@ -145,7 +155,11 @@ public class AlcoListener implements ActionListener {
 							vv.dispose();
 							ve.hacerVisible();
 							vv.limpiarDatos();
-
+							pec.limpiartabla();
+							pei.limpiarComponentes();
+							pec.hacerInvisible();
+							pei.hacerInvisible();
+							pem.hacerInvisible();
 						} else {
 							// CONTRASEÑA NO COINCIDE
 							contInt++;
@@ -185,6 +199,28 @@ public class AlcoListener implements ActionListener {
 					}
 				}
 				
+			} else if (ev.getActionCommand().equals(PEmpleInsert.BTN_INSERTAR)) {
+				if (pei.getMarcaInsert().isEmpty() || pei.getModeloInsert().isEmpty() || pei.getTraccionInsert().isEmpty() ||
+						pei.getFechaSalidaInsert().isEmpty() || pei.getReservadoInsert().isEmpty()) {
+					pei.mostrarMsjInfo("DEBE COMPLETAR TODOS LOS CAMPOS OBLIGATORIOS (MARCA, MODELO, TRACCION, FECHA DE SALIDA, RESERVADO)");
+				} else if (!pei.getTraccionInsert().equals("Delantera") && !pei.getTraccionInsert().equals("Trasera") && !pei.getTraccionInsert().equals("Total")) {
+					pei.mostrarMsjInfo("LA TRACCION DEBE SER: Delantera, Trasera o Total");
+				} else if (!pei.getReservadoInsert().equals("SI") && !pei.getReservadoInsert().equals("NO")) {
+					pei.mostrarMsjInfo("EL CAMPO RESERVADO DEBE SER: SI O NO");
+				} else {
+					int res = modelCoche.insertCoche(pei.getMarcaInsert(), pei.getModeloInsert(), pei.getTraccionInsert(), pei.getAniadidosInsert(), 
+							pei.getFechaSalidaInsert(), pei.getReservadoInsert());
+					
+					if (res == -1) {
+						pei.mostrarMsjError("NO SE PUDO REALIZAR LA INSERCIÓN");
+					} else {
+						pei.mostrarMsjInfo("SE HA REALIZADO LA INSERCIÓN");
+					}
+				}
+				
+				
+			} else if (ev.getActionCommand().equals(PEmpleInsert.BTN_LIMPIAR)) {
+				pei.limpiarComponentes();
 			}
 		}
 

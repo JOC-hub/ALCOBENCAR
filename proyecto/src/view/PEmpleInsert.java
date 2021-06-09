@@ -15,8 +15,13 @@ import javax.swing.SpinnerNumberModel;
 
 import control.AlcoListener;
 import model.Coche;
+import java.awt.Color;
+import java.awt.SystemColor;
+import javax.swing.JScrollPane;
 
 public class PEmpleInsert extends JPanel {
+	
+	private static final long serialVersionUID = 1L;
 	public static final String BTN_INSERTAR = "Registrar Coche";
 	public static final String BTN_LIMPIAR = "Limpiar Datos";
 	
@@ -74,16 +79,10 @@ public class PEmpleInsert extends JPanel {
 		add(txtTraccion);
 		txtTraccion.setColumns(10);
 		
-		JLabel lblAdds = new JLabel("Anadidos:");
+		JLabel lblAdds = new JLabel("A\u00F1adidos:");
 		lblAdds.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblAdds.setBounds(60, 313, 72, 15);
 		add(lblAdds);
-		
-		txtaAdds = new JTextArea();
-		txtaAdds.setWrapStyleWord(true);
-		txtaAdds.setLineWrap(true);
-		txtaAdds.setBounds(142, 309, 137, 92);
-		add(txtaAdds);
 		
 		JLabel lblFechaS = new JLabel("Fecha salida:");
 		lblFechaS.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -111,7 +110,7 @@ public class PEmpleInsert extends JPanel {
 		add(lblReserva);
 		
 		cmbReservado = new JComboBox<String>();
-		cmbReservado.setModel(new DefaultComboBoxModel<String>(new String[] {"SI", "NO"}));
+		cmbReservado.setModel(new DefaultComboBoxModel(new String[] {"NO", "SI"}));
 		cmbReservado.setBounds(499, 205, 72, 22);
 		add(cmbReservado);
 		
@@ -124,6 +123,16 @@ public class PEmpleInsert extends JPanel {
 		btnLimpiar.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnLimpiar.setBounds(408, 374, 163, 27);
 		add(btnLimpiar);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(142, 307, 137, 94);
+		add(scrollPane);
+		
+		txtaAdds = new JTextArea();
+		scrollPane.setViewportView(txtaAdds);
+		txtaAdds.setBackground(Color.WHITE);
+		txtaAdds.setWrapStyleWord(true);
+		txtaAdds.setLineWrap(true);
 	}
 	
 	public void setListener(AlcoListener listener) {
@@ -142,6 +151,14 @@ public class PEmpleInsert extends JPanel {
 		cmbReservado.setSelectedIndex(0);
 	}
 	
+	public void hacerInvisible() {
+		setVisible(false);
+	}
+	
+	public void hacerVisible() {
+		setVisible(true);
+	}
+	
 	public void mostrarMsjError(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de datos", JOptionPane.ERROR_MESSAGE);
 	}
@@ -150,33 +167,33 @@ public class PEmpleInsert extends JPanel {
 		JOptionPane.showMessageDialog(this, msj, "Resultado de Operación", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public Coche getDatos() {
-		Coche coches = null;
-		
+	public String getMarcaInsert() {		
 		String marca = txtMarca.getText().trim();
-		
-		if (marca.isEmpty()) {
-			mostrarMsjError("Debe introducir la marca del coche");
-		} else {
-			String modelo = txtModelo.getText().trim();
+		return marca;
+	}
+	
+	public String getModeloInsert() {
+		String modelo = txtModelo.getText().trim();
+		return modelo;
+	}
 			
-			if (modelo.isEmpty()) {
-				mostrarMsjError("Debe introducir el modelo de coche");
-			} else {
-				String traccion = txtTraccion.getText().trim();
-				
-				if (traccion.isEmpty()) {
-					mostrarMsjError("Debe introducir el tipo de tracción");
-				} else {
-					String aniadidos = txtaAdds.getText().trim();
-					String reservado = (String) cmbReservado.getSelectedItem();
-				    String fechaSalida = (String) spnDia.getValue() + "/" + (String) spnMes.getValue() + "/" + (String) spnAnio.getValue(); 
-				    
-				    coches = new Coche(marca, modelo, traccion, aniadidos, fechaSalida, reservado);
-				}
-			}
-		}
+	public String getTraccionInsert() {
+		String traccion = txtTraccion.getText().trim();
+		return traccion;
+	}
+	
+	public String getAniadidosInsert() {
+		String aniadidos = txtaAdds.getText().trim();
+		return aniadidos;
+	}
 		
-		return coches;
+	public String getFechaSalidaInsert() {
+		String fechaSalida = spnDia.getValue() + "/" + spnMes.getValue() + "/" + spnAnio.getValue(); 
+		return fechaSalida;
+	}
+	
+	public String getReservadoInsert() {
+		String reservado = (String) cmbReservado.getSelectedItem();
+		return reservado;
 	}
 }

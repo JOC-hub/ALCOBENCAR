@@ -119,7 +119,7 @@ public class PEmpleCons extends JPanel {
 
 		tblConsultasEmple.setModel(tblModel);
 
-		tblConsultasEmple.getColumn(CLM_ID).setPreferredWidth(10);
+		tblConsultasEmple.getColumn(CLM_ID).setPreferredWidth(15);
 		tblConsultasEmple.getColumn(CLM_MARCA).setPreferredWidth(60);
 		tblConsultasEmple.getColumn(CLM_MODELO).setPreferredWidth(90);
 		tblConsultasEmple.getColumn(CLM_TRACCION).setPreferredWidth(80);
@@ -136,7 +136,7 @@ public class PEmpleCons extends JPanel {
 		Object[] fila = new Object[7];
 
 		for (Coche coche : listaCoches) {
-			fila[0] = coche.getIdCoche();
+			fila[0] = coche.getId_coche();
 			fila[1] = coche.getMarca();
 			fila[2] = coche.getModelo();
 			fila[3] = coche.getTraccion();

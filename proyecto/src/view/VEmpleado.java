@@ -19,14 +19,15 @@ public class VEmpleado extends JFrame {
 	static final int ALTO = 600;
 	
 	public final String MNTM_CONSULTAR = "CONSULTAR / BORRAR";
-	public final String MNTM_BORRAR = "BORRAR";
 	public final String MNTM_MODIFICAR = "MODIFICAR";
 	public final String MNTM_VOLVER = "VOLVER";
+	public final String MNTM_INSERT = "INSERTAR";
 	
 	private JScrollPane scrpContenedor;
 	private JMenuItem mntmConsultar;
 	private JMenuItem mntmModificar;
 	private JMenuItem mntmVolver;
+	private JMenuItem mntmInsertar;
 	
 	public VEmpleado() {
 		crearMenu();
@@ -58,8 +59,12 @@ public class VEmpleado extends JFrame {
 		mntmModificar = new JMenuItem(MNTM_MODIFICAR);
 		menuBar.add(mntmModificar);
 		
+		mntmInsertar = new JMenuItem(MNTM_INSERT);
+		menuBar.add(mntmInsertar);
+		
 		mntmVolver = new JMenuItem(MNTM_VOLVER);
 		menuBar.add(mntmVolver);
+		
 	}
 
 	public void hacerVisible() {
@@ -74,5 +79,6 @@ public class VEmpleado extends JFrame {
 		mntmConsultar.addActionListener(listener);
 		mntmModificar.addActionListener(listener);
 		mntmVolver.addActionListener(listener);
+		mntmInsertar.addActionListener(listener);
 	}
 }

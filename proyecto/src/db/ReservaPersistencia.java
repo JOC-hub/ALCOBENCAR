@@ -21,6 +21,7 @@ public class ReservaPersistencia {
 		PreparedStatement pstmt = null;
 		
 		int res = 0;
+		
 		try {
 			con = adb.getConexion();
 			
@@ -51,5 +52,39 @@ public class ReservaPersistencia {
 		return res;
 		
 		
+	}
+	
+	public int deleteReserva(int idCoche) {
+		String query = "DELETE FROM INFO_RESERVA WHERE ID_COCHE = ?";
+		int res = 0;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setInt(1, idCoche);
+			
+			res = pstmt.executeUpdate();
+						
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			res = -1;
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res;
 	}
 }

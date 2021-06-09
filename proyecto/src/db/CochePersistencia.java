@@ -599,4 +599,42 @@ public class CochePersistencia {
 		return res;
 	}
 	
+	public String isCocheReservado(int idCoche) {
+		String dniRes = "";
+		
+		String query = "SELECT DNI FROM INFO_RESERVA WHERE ID_COCHE = ?";
+				
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rslt = null;
+		
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setInt(1, idCoche);
+			
+			rslt = pstmt.executeQuery();
+			
+			dniRes = rslt.getString(1);
+						
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return dniRes;
+	}
+		
+	
+	
 }

@@ -71,6 +71,64 @@ public class CochePersistencia {
 		
 	}
 	
+	public ArrayList<Coche> selectCocheEmpleId(int id_coche) {
+		ArrayList<Coche> listaCoches = new ArrayList<Coche>();
+		
+		String query = "SELECT ID_COCHE, MARCA, MODELO, TRACCION, ANIADIDOS, FECHA_SALIDA, RESERVADO FROM COCHE " 
+		+ "WHERE ID_COCHE = ? ";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rslt = null;
+		
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setInt(1, id_coche);
+			
+			rslt = pstmt.executeQuery();
+
+			int id;
+			String marca;
+			String modelo;
+			String traccion;
+			String aniadidos;
+			String fecha;
+			String reserv;
+			
+			while (rslt.next()) {
+				id = rslt.getInt(1);
+				marca = rslt.getString(2);
+				modelo = rslt.getString(3);
+				traccion = rslt.getString(4);
+				aniadidos = rslt.getString(5);
+				fecha = rslt.getString(6);
+				reserv = rslt.getString(7);
+				
+				listaCoches.add(new Coche(id, marca, modelo, traccion, aniadidos, fecha, reserv));
+				
+			}
+			
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rslt != null) rslt.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return listaCoches;
+	}
+	
 	public ArrayList<Coche> selectCocheMarcaEmple(String marcaFiltro) {
 		ArrayList<Coche> listaCoches = new ArrayList<Coche>();
 		
@@ -635,6 +693,80 @@ public class CochePersistencia {
 		return dniRes;
 	}
 		
+	public int updateCoche(int id, String marca, String modelo, String traccion, String aniadidos, String fecha) {
+		int res = 0;
+		
+		String query = "UPDATE COCHE SET MARCA = ?, MODELO = ?, TRACCION = ?, ANIADIDOS = ?, FECHA_SALIDA = ? "
+				+ "WHERE ID_COCHE = ?";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = adb.getConexion();
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setString(1, marca);
+			pstmt.setString(2, modelo);
+			pstmt.setString(3, traccion);
+			pstmt.setString(4, aniadidos);
+			pstmt.setString(5, fecha);
+			pstmt.setInt(6, id);
+			
+			res = pstmt.executeUpdate();
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			res = -1;
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res;
+	}
 	
+	public int quitarReserva(int idCoche) {
+		int res = 0;
+		
+		String query = "UPDATE COCHE SET RESERVADO = 'NO' "
+				+ "WHERE ID_COCHE = ?";
+				
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = adb.getConexion();
+			
+			pstmt = con.prepareStatement(query);
+			
+			pstmt.setInt(1, idCoche);
+			
+			res = pstmt.executeUpdate();
+						
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			res = -1;
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return res;
+	}
 	
 }

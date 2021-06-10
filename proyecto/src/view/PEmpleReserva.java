@@ -7,32 +7,29 @@ import javax.swing.JPanel;
 import java.awt.Font;
 import java.util.ArrayList;
 
-import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import control.AlcoListener;
-import model.Coche;
 import model.Reserva;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 
 public class PEmpleReserva extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	//public static final String BTN_CONSULTAR = "Consultar Reserva";
 	private static final String CLM_APE_NOM = "NOMBRE Y APELLIDO";
 	private static final String CLM_DNI = "DNI";
 	private static final String CLM_FECHA_RES = "FECHA RESERVA";
 	private static final String CLM_ID = "ID";
-	public static final String OPT_CUALQUIER = "Cualquiera";
+	public static final String BTN_ELIMINAR = "ELIMINAR RESERVA";
 	
 	private JTable tblConsultas;
 	private DefaultTableModel tblModel;
-	private JButton btnConsultar;
+	private JButton btnEliminar;
+	
 	public PEmpleReserva() {
 		init();
 	}
@@ -55,9 +52,9 @@ public class PEmpleReserva extends JPanel {
 		tblConsultas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrpTabla.setViewportView(tblConsultas);
 		
-		/*btnConsultar = new JButton(BTN_CONSULTAR);
-		btnConsultar.setBounds(119, 409, 152, 35);
-		add(btnConsultar);*/
+		btnEliminar = new JButton(BTN_ELIMINAR);
+		btnEliminar.setBounds(615, 393, 123, 28);
+		add(btnEliminar);
 		
 		configurarTabla();
 	}
@@ -88,9 +85,9 @@ public class PEmpleReserva extends JPanel {
 		tblConsultas.getColumn(CLM_ID).setPreferredWidth(15);
 	}
 	
-	/*public void setListener(AlcoListener listener) {
-		btnConsultar.addActionListener(listener);
-	}*/
+	public void setListener(AlcoListener listener) {
+		btnEliminar.addActionListener(listener);
+	}
 	
 	public void hacerVisible() {
 		setVisible(true);
@@ -101,6 +98,11 @@ public class PEmpleReserva extends JPanel {
 
 	public void mostrarMsjInfo(String msj) {
 		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.INFORMATION_MESSAGE);
+		
+	}
+	
+	public void mostrarMsjError(String msj) {
+		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
 		
 	}
 
@@ -119,4 +121,17 @@ public class PEmpleReserva extends JPanel {
 		}
 
 	}
+	
+	public int getCocheSeleccionado() {
+		int id_coche = 0;
+		
+		if(tblConsultas.getSelectedRow() == -1) {
+			mostrarMsjError("Debe seleccionar la reserva a eliminar");
+		} else {
+			id_coche = (int) tblModel.getValueAt(tblConsultas.getSelectedRow(), 3);
+		}
+		
+		return id_coche;
+	}
+	
 }

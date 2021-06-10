@@ -14,9 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import control.AlcoListener;
-import model.Coche;
 import java.awt.Color;
-import java.awt.SystemColor;
 import javax.swing.JScrollPane;
 
 public class PEmpleInsert extends JPanel {

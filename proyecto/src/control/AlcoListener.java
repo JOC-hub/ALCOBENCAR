@@ -39,9 +39,10 @@ public class AlcoListener implements ActionListener {
 	private EmpleadosPersistencia modeloEmple;
 	private CochePersistencia modelCoche;
 	private ReservaPersistencia modelReserva;
+	private boolean inModif = false;
 
-	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleCons pec, PEmpleModi pem,
-			PEmpleInsert pei, PEmpleReserva per) {
+	public AlcoListener(VPMenu vMenu, VCliente vc, VVerificacion pv, VEmpleado ve, PEmpleCons pec, PEmpleInsert pei,
+			PEmpleModi pem, PEmpleReserva per) {
 		this.vMenu = vMenu;
 		this.vc = vc;
 		this.vv = pv;
@@ -50,6 +51,7 @@ public class AlcoListener implements ActionListener {
 		this.pem = pem;
 		this.pei = pei;
 		this.per = per;
+		this.pem = pem;
 		modeloEmple = new EmpleadosPersistencia();
 		modelCoche = new CochePersistencia();
 		modelReserva = new ReservaPersistencia();
@@ -72,10 +74,15 @@ public class AlcoListener implements ActionListener {
 			} else if (ev.getActionCommand().equals(ve.MNTM_MODIFICAR)) {
 				pem.hacerVisible();
 				ve.cargarPanel(pem);
+				pem.cargarCmbMarcasModi(modelCoche.selectDisctinctMarca());
+				pem.cargarCmbModelosModi(modelCoche.selectDisctinctModelo());
+				pem.disableDetalles();
+				pem.limpiarDetalles();
+				pem.enableTabla();
 			} else if (ev.getActionCommand().equals(ve.MNTM_INSERT)) {
 				pei.hacerVisible();
 				ve.cargarPanel(pei);
-			}else if(ev.getActionCommand().equals(ve.MNTM_RESERVAS)) {
+			} else if (ev.getActionCommand().equals(ve.MNTM_RESERVAS)) {
 				per.hacerVisible();
 				ve.cargarPanel(per);
 				consultarReservaEmple();
@@ -110,7 +117,6 @@ public class AlcoListener implements ActionListener {
 						vc.getTraccionSeleccionada(), vc.getAniadidosSeleccionados(), vc.getFechaSeleccionada());
 				String dni = vc.getDNI();
 				String apeNom = vc.getApeNom();
-				
 
 				if (dni.length() != 9) {
 					vc.mostrarMsjError("DEBE INTRODUCIR UN DNI VALIDO");
@@ -253,7 +259,72 @@ public class AlcoListener implements ActionListener {
 
 			} else if (ev.getActionCommand().equals(PEmpleInsert.BTN_LIMPIAR)) {
 				pei.limpiarComponentes();
-			} 
+			} else if (ev.getActionCommand().equals(PEmpleModi.BTN_CONSULTAR)) {
+				if (inModif) {
+					pem.disableDetalles();
+					pem.limpiarDetalles();
+					pem.enableTabla();
+				}
+				consultarCocheEmpleModi();
+			} else if (ev.getActionCommand().equals(PEmpleModi.BTN_MODIF)) {
+				if (pem.isCocheSelected()) {
+					inModif = true;
+					pem.enableDetalles();
+					pem.disableTabla();
+
+					pem.cargarDetalles(modelCoche.selectCocheEmpleId(pem.getCocheSeleccionadoModi()));
+				} else {
+					pem.mostrarMsjError("DEBE SELECCIONAR UN COCHE PARA MODIFICARLO");
+					pem.disableDetalles();
+					pem.limpiarDetalles();
+				}
+			} else if (ev.getActionCommand().equals(PEmpleModi.BTN_GUARDAR)) {
+				String fechaSalida = pem.getDiaModif() + "/" + pem.getMesModif() + "/" + pem.getAnioModif();
+				String marca = pem.getMarcaModif();
+				String modelo = pem.getModeloModif();
+
+				if (marca.isEmpty() && modelo.isEmpty()) {
+					pem.mostrarMsjInfo("DEBE INTRODUCIR UNA MARCA Y UN MODELO");
+				} else if (marca.isEmpty()) {
+					pem.mostrarMsjInfo("DEBE INTRODUCIR UNA MARCA");
+				} else if (modelo.isEmpty()) {
+					pem.mostrarMsjInfo("DEBE INTRODUCIR UN MODELO");
+				} else {
+					modelCoche.updateCoche(pem.getCocheSeleccionadoModi(), marca, modelo, pem.getTraccionModif(),
+							pem.getAniadidosModif(), fechaSalida);
+					pem.mostrarMsjInfo("SE HA REALIZADO LA MODIFICACION");
+					consultarCocheEmpleModi();
+					pem.disableDetalles();
+					pem.limpiarDetalles();
+					pem.enableTabla();
+				}
+
+			} else if (ev.getActionCommand().equals(PEmpleModi.BTN_CANCELAR)) {
+				pem.disableDetalles();
+				pem.limpiarDetalles();
+				pem.enableTabla();
+			} else if (ev.getActionCommand().equals(PEmpleReserva.BTN_ELIMINAR)) {
+				int idCoche = per.getCocheSeleccionado();
+
+				int opcion = JOptionPane.showConfirmDialog(per,
+						"Se va a eliminar la reserva seleccionada ¿Desea continuar?",
+						"Confirmación de borrado", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+				if (opcion == JOptionPane.YES_OPTION) {
+					int res = modelReserva.deleteReserva(idCoche);
+					modelCoche.quitarReserva(idCoche);
+
+					if (res == -1) {
+						per.mostrarMsjError("No se podido eliminar la reserva");
+
+					} else {
+						per.mostrarMsjInfo("El borrado se ha realizado con éxito");
+						consultarReservaEmple();
+					}
+				}
+
+			}
+
 		}
 
 	}
@@ -310,15 +381,41 @@ public class AlcoListener implements ActionListener {
 			}
 		}
 	}
-	
+
+	private void consultarCocheEmpleModi() {
+		String marcaFiltro = pem.getMarcaFiltroModi();
+		String modeloFiltro = pem.getModeloFiltroModi();
+
+		ArrayList<Coche> listaCoches = null;
+
+		if (marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER)) {
+			listaCoches = modelCoche.selectCocheEmple();
+			pem.cargarTablaModi(listaCoches);
+			if (listaCoches.isEmpty()) {
+				pem.mostrarMsjInfo("NO HAY COCHES DISPONIBLES");
+			}
+		} else if ((marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && !modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER))) {
+			pem.mostrarMsjError("Debe seleccionar marca");
+		} else if ((!marcaFiltro.equals(PEmpleCons.OPT_CUALQUIER) && modeloFiltro.equals(PEmpleCons.OPT_CUALQUIER))) {
+			listaCoches = modelCoche.selectCocheMarcaEmple(marcaFiltro);
+			pem.cargarTablaModi(listaCoches);
+		} else {
+			listaCoches = modelCoche.selectCocheMarcaModeloEmple(marcaFiltro, modeloFiltro);
+			pem.cargarTablaModi(listaCoches);
+			if (listaCoches.isEmpty()) {
+				pem.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+			}
+		}
+	}
+
 	private void consultarReservaEmple() {
 		ArrayList<Reserva> listaReservas = null;
-		
+
 		listaReservas = modelReserva.selectReservaEmple();
 		per.cargarTabla(listaReservas);
-		
-			if (listaReservas.isEmpty()) {
-				per.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
+
+		if (listaReservas.isEmpty()) {
+			per.mostrarMsjInfo("NO SE ENCONTRARON RESULTADOS DE LA BÚSQUEDA");
 		}
 	}
 }

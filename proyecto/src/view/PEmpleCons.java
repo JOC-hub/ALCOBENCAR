@@ -190,7 +190,7 @@ public class PEmpleCons extends JPanel {
 		
 		if (tblConsultasEmple.getSelectedRow() == -1) {
 			ps.playSound(vMenu.errorURL);
-			mostrarMsjError("Debe seleccionar el piloto que desea eliminar");
+			mostrarMsjError("Debe seleccionar el coche que desea eliminar");
 			
 		} else {
 			idCoche = (int) tblModel.getValueAt(tblConsultasEmple.getSelectedRow(), 0);
@@ -214,11 +214,11 @@ public class PEmpleCons extends JPanel {
 	}
 	
 	public void mostrarMsjError(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void mostrarMsjInfo(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void limpiartabla() {

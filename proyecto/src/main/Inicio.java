@@ -24,7 +24,7 @@ public class Inicio {
 				PlaySound ps = new PlaySound();
 				VPMenu vMenu = new VPMenu();
 				VCliente pc = new VCliente();
-				VVerificacion vv = new VVerificacion();
+				VVerificacion vv = new VVerificacion(vMenu, ps);
 				VEmpleado ve = new VEmpleado();
 				PEmpleCons pec = new PEmpleCons(vMenu, ps);
 				PEmpleModi pem = new PEmpleModi();

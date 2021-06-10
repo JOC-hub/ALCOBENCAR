@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 
 import control.AlcoListener;
 import model.Empleados;
+import sound.PlaySound;
 
 public class VVerificacion extends JFrame {
 
@@ -20,13 +21,20 @@ public class VVerificacion extends JFrame {
 	static final int ANCHO = 400;
 	static final int ALTO = 300;
 	public final static String BTN_LOGIN = "Login";
+	public final static String BTN_CANCELAR = "Cancelar";
 
 	private JTextField txtUser;
 	private JPasswordField txtPwd;
 	private JButton btnLogin;
+	private VPMenu vMenu;
+	private PlaySound ps;
+	private JButton btnCancelarLogin;
 
-	public VVerificacion() {
+	public VVerificacion(VPMenu vMenu, PlaySound ps) {
 		setTitle("Ventana Login");
+		this.vMenu = vMenu;
+		this.ps = ps;
+		
 		init();
 	}
 
@@ -53,8 +61,12 @@ public class VVerificacion extends JFrame {
 		getContentPane().add(txtPwd);
 
 		btnLogin = new JButton(BTN_LOGIN);
-		btnLogin.setBounds(164, 178, 89, 23);
+		btnLogin.setBounds(153, 178, 89, 23);
 		getContentPane().add(btnLogin);
+		
+		btnCancelarLogin = new JButton(BTN_CANCELAR);
+		btnCancelarLogin.setBounds(153, 212, 89, 23);
+		getContentPane().add(btnCancelarLogin);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -71,7 +83,7 @@ public class VVerificacion extends JFrame {
 
 	public void setListener(AlcoListener listener) {
 		btnLogin.addActionListener(listener);
-		
+		btnCancelarLogin.addActionListener(listener);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -80,6 +92,7 @@ public class VVerificacion extends JFrame {
 		String user = txtUser.getText().trim();
 		
 		if (user.isEmpty()) {
+			ps.playSound(vMenu.errorURL);
 			mostrarMsjError("Debe de introducir el nombre de usuario");
 		} else {
 			//por alguna razon pone que el metodo getText de pwd esta obsoleto
@@ -98,7 +111,7 @@ public class VVerificacion extends JFrame {
 	}
 
 	public void mostrarMsjError(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error", JOptionPane.ERROR_MESSAGE);		
+		JOptionPane.showMessageDialog(this, msj, "ERROR", JOptionPane.ERROR_MESSAGE);		
 	}
 
 	public void limpiarDatos() {
@@ -110,5 +123,4 @@ public class VVerificacion extends JFrame {
 		txtPwd.setText(null);
 		
 	}
-	
 }

@@ -16,9 +16,9 @@ public class PlaySound {
 		clip = AudioSystem.getClip();
 		clip.open(audioInputStream);
 		clip.start();
-		System.out.println("PLAYING MUSIC");
+		System.out.println("Dale papu esta sonando ese sonido");
 		} catch(Exception ex) {
-		System.out.println("Error with playing sound.");
+		System.out.println("Error con el sonido");
 		ex.printStackTrace();
 		}
 		

@@ -34,7 +34,7 @@ public class PEmpleModi extends JPanel {
 
 	public static final String BTN_CONSULTAR = "VER COCHES";
 	public static final String BTN_GUARDAR = "GUARDAR CAMBIOS";
-	public static final String BTN_CANCELAR = "CANCELAR";
+	public static final String BTN_CANCELAR = "CANCELAR MODIFICACION";
 	public static final String BTN_MODIF = "MODIFICAR";
 	
 	private static final String CLM_ID = "ID";
@@ -119,7 +119,7 @@ public class PEmpleModi extends JPanel {
 		add(btnGuardarModif);
 		
 		btnCancelarModif = new JButton(BTN_CANCELAR);
-		btnCancelarModif.setBounds(586, 480, 112, 23);
+		btnCancelarModif.setBounds(492, 480, 206, 23);
 		add(btnCancelarModif);
 		
 		txtMarcaModif = new JTextField();
@@ -328,6 +328,10 @@ public class PEmpleModi extends JPanel {
 
 	}
 	
+	public void deselectTabla() {
+		tblConsultasEmpleModi.clearSelection();
+	}
+	
 	public boolean isCocheSelected() {
 		boolean isSelected = false;
 		
@@ -427,11 +431,11 @@ public class PEmpleModi extends JPanel {
 	}
 	
 	public void mostrarMsjError(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "ERROR", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void mostrarMsjInfo(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public void limpiartablaModi() {

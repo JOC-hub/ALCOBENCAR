@@ -315,12 +315,12 @@ public class VCliente extends JFrame {
 	}
 	
 	public void mostrarMsjError(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "ERROR", JOptionPane.ERROR_MESSAGE);
 
 	}
 
 	public void mostrarMsjInfo(String msj) {
-		JOptionPane.showMessageDialog(this, msj, "Error de selección", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, msj, "", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public void limpiartabla() {

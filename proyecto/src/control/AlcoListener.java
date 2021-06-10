@@ -192,6 +192,9 @@ public class AlcoListener implements ActionListener {
 						}
 					}
 				}
+			} else if (ev.getActionCommand().equals(VVerificacion.BTN_CANCELAR)) {
+				vv.dispose();
+				vMenu.hacerVisible();
 			} else if (ev.getActionCommand().equals(PEmpleCons.BTN_CONSULTAR)) {
 				consultarCocheEmple();
 			} else if (ev.getActionCommand().equals(PEmpleCons.BTN_ELIMINAR)) {
@@ -334,6 +337,7 @@ public class AlcoListener implements ActionListener {
 				}
 
 			} else if (ev.getActionCommand().equals(PEmpleModi.BTN_CANCELAR)) {
+				pem.deselectTabla();
 				pem.disableDetalles();
 				pem.limpiarDetalles();
 				pem.enableTabla();

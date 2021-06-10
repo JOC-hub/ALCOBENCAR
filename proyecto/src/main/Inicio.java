@@ -3,6 +3,7 @@ package main;
 import java.awt.EventQueue;
 
 import control.AlcoListener;
+import sound.PlaySound;
 import view.VCliente;
 import view.VEmpleado;
 import view.VVerificacion;
@@ -20,15 +21,17 @@ public class Inicio {
 			
 			@Override
 			public void run() {
+				PlaySound ps = new PlaySound();
 				VPMenu vMenu = new VPMenu();
 				VCliente pc = new VCliente();
 				VVerificacion vv = new VVerificacion();
 				VEmpleado ve = new VEmpleado();
-				PEmpleCons pec = new PEmpleCons();
+				PEmpleCons pec = new PEmpleCons(vMenu, ps);
 				PEmpleModi pem = new PEmpleModi();
 				PEmpleInsert pei = new PEmpleInsert();
-				PEmpleReserva per = new PEmpleReserva();
-				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, pec, pei, pem, per);
+				PEmpleReserva per = new PEmpleReserva(vMenu, ps);
+				
+				AlcoListener listener = new AlcoListener(vMenu, pc, vv, ve, pec, pei, pem, per, ps);
 				vMenu.setListener(listener);
 				pc.setListener(listener);
 				vv.setListener(listener);

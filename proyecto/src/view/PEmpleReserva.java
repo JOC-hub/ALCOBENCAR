@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 
 import control.AlcoListener;
 import model.Reserva;
+import sound.PlaySound;
 
 import javax.swing.JButton;
 
@@ -26,11 +27,15 @@ public class PEmpleReserva extends JPanel {
 	private static final String CLM_ID = "ID";
 	public static final String BTN_ELIMINAR = "ELIMINAR RESERVA";
 	
+	private VPMenu vMenu;
+	private PlaySound ps;
 	private JTable tblConsultas;
 	private DefaultTableModel tblModel;
 	private JButton btnEliminar;
 	
-	public PEmpleReserva() {
+	public PEmpleReserva(VPMenu vMenu, PlaySound ps) {
+		this.vMenu = vMenu;
+		this.ps = ps;	
 		init();
 	}
 
@@ -123,15 +128,16 @@ public class PEmpleReserva extends JPanel {
 	}
 	
 	public int getCocheSeleccionado() {
-		int id_coche = 0;
+		int idCoche = -1;
 		
 		if(tblConsultas.getSelectedRow() == -1) {
+			ps.playSound(vMenu.errorURL);
 			mostrarMsjError("Debe seleccionar la reserva a eliminar");
 		} else {
-			id_coche = (int) tblModel.getValueAt(tblConsultas.getSelectedRow(), 3);
+			idCoche = (int) tblModel.getValueAt(tblConsultas.getSelectedRow(), 3);
 		}
 		
-		return id_coche;
+		return idCoche;
 	}
 	
 }

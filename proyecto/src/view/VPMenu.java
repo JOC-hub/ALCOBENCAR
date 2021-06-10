@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.URL;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,6 +18,7 @@ public class VPMenu extends JFrame {
 	static final int ANCHO = 800;
 	static final int ALTO = 600;
 	
+	public URL errorURL = getClass().getResource("error.wav");
 	public final static String BTN_ACC_CLIENTE = "CLIENTE";
 	public final static String BTN_ACC_EMPLE = "EMPLEADO";
 	private JScrollPane scrpContenedor;

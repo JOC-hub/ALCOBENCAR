@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import control.AlcoListener;
 import model.Coche;
+import sound.PlaySound;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -18,9 +19,6 @@ import javax.swing.table.DefaultTableModel;
 
 public class PEmpleCons extends JPanel {
 	
-	public PEmpleCons(){
-		init();
-	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,6 +36,8 @@ public class PEmpleCons extends JPanel {
 	private static final String CLM_RESERVADO = "RESERVADO";
 	public static final String OPT_CUALQUIER = "Cualquiera";
 	
+	private VPMenu vMenu;
+	private PlaySound ps;
 	private JButton btnConsultar;
 	private JButton btnEliminar;
 	private JTable tblConsultasEmple;
@@ -47,6 +47,11 @@ public class PEmpleCons extends JPanel {
 	private DefaultComboBoxModel<String> cmbModelModelo;
 	private DefaultTableModel tblModel;
 	
+	public PEmpleCons(VPMenu vMenu, PlaySound ps){
+		this.vMenu = vMenu;
+		this.ps = ps;
+		init();
+	}
 	private void init() {
 		setLayout(null);		
 		
@@ -184,7 +189,9 @@ public class PEmpleCons extends JPanel {
 		int idCoche = -1;
 		
 		if (tblConsultasEmple.getSelectedRow() == -1) {
+			ps.playSound(vMenu.errorURL);
 			mostrarMsjError("Debe seleccionar el piloto que desea eliminar");
+			
 		} else {
 			idCoche = (int) tblModel.getValueAt(tblConsultasEmple.getSelectedRow(), 0);
 		}

@@ -144,16 +144,6 @@ public class AlcoListener implements ActionListener {
 				contInt = 0;
 				vv.hacerVisible();
 				vMenu.hacerInvisible();
-			} else if (ev.getActionCommand().equals(VVerificacion.BTN_BYPASS)) {
-				ve.hacerVisible();
-				vv.dispose();
-				vv.limpiarDatos();
-				pec.limpiartabla();
-				pei.limpiarComponentes();
-				pec.hacerInvisible();
-				pei.hacerInvisible();
-				pec.hacerInvisible();
-				per.hacerInvisible();
 			} else if (ev.getActionCommand().equals(VVerificacion.BTN_LOGIN)) {
 				Empleados empleado = vv.getDatos();
 
@@ -179,8 +169,11 @@ public class AlcoListener implements ActionListener {
 							contInt++;
 							vv.mostrarMsjError(
 									"La contraseña no es válida. Te quedan " + (INTENTOS - contInt) + " intentos.");
+								vv.limpiarContrasenia();
 							if (contInt == INTENTOS) {
-								System.exit(0);
+								vv.dispose();
+								vMenu.hacerVisible();
+								vv.limpiarDatos();
 							}
 						}
 					}

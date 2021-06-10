@@ -20,12 +20,10 @@ public class VVerificacion extends JFrame {
 	static final int ANCHO = 400;
 	static final int ALTO = 300;
 	public final static String BTN_LOGIN = "Login";
-	public final static String BTN_BYPASS = "BYPASS";
 
 	private JTextField txtUser;
 	private JPasswordField txtPwd;
 	private JButton btnLogin;
-	private JButton btnBypass;
 
 	public VVerificacion() {
 		setTitle("Ventana Login");
@@ -57,12 +55,6 @@ public class VVerificacion extends JFrame {
 		btnLogin = new JButton(BTN_LOGIN);
 		btnLogin.setBounds(164, 178, 89, 23);
 		getContentPane().add(btnLogin);
-		
-		//Este boton luego lo quitamos que de momento lo usamos para navegar sin tener que introducir datos cada vez que
-		//estemos navegando la app
-		btnBypass = new JButton(BTN_BYPASS);
-		btnBypass.setBounds(164, 212, 89, 23);
-		getContentPane().add(btnBypass);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -79,8 +71,6 @@ public class VVerificacion extends JFrame {
 
 	public void setListener(AlcoListener listener) {
 		btnLogin.addActionListener(listener);
-		//un boton provisional para saltarme el login que no esta completamente implementado
-		btnBypass.addActionListener(listener);
 		
 	}
 	
@@ -114,6 +104,11 @@ public class VVerificacion extends JFrame {
 	public void limpiarDatos() {
 		txtPwd.setText(null);
 		txtUser.setText(null);
+	}
+
+	public void limpiarContrasenia() {
+		txtPwd.setText(null);
+		
 	}
 	
 }

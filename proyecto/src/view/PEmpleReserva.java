@@ -53,7 +53,7 @@ public class PEmpleReserva extends JPanel {
 		scrpTabla.setViewportView(tblConsultas);
 		
 		btnEliminar = new JButton(BTN_ELIMINAR);
-		btnEliminar.setBounds(615, 393, 123, 28);
+		btnEliminar.setBounds(549, 393, 189, 28);
 		add(btnEliminar);
 		
 		configurarTabla();
